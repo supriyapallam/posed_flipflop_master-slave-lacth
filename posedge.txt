@@ -1,0 +1,51 @@
+//Design Code
+`include "peff.v"
+`include "ms_lat.v"
+
+module peff_ms(output wire qpe,qms,input d,clk);
+  
+  d_ffpe a1(qpe, ,clk,d);
+  master_slave_dlatch a2(qms, ,clk,d);
+endmodule
+
+//Test Bench Code
+module test();
+  wire qpe,qms;
+  reg d,clk;
+  
+  peff_ms DUT(qpe,qms,d,clk);
+  
+  initial
+    begin
+      clk=1'b0;
+      forever #5 clk=~clk;
+    end
+  
+  initial
+    begin
+      @(negedge clk);
+      
+      @(negedge clk) d=1'b0;
+      @(negedge clk);
+      
+      @(negedge clk) d=1'b1;
+      @(negedge clk);
+      #20;
+      $finish;
+    end
+  
+  initial
+    begin
+      $timeformat(-9,0,"ns",10);
+      $monitor("time=%0t,d=%b,qms=%b,qpe=%b",$time,d,qms,qpe);
+    end
+  
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  
+endmodule
+
+
